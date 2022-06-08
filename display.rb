@@ -2,19 +2,27 @@
 
 # Contains the messages displayed to the player.
 module Display
-  def input_guess
-    'Input your 4 digits guess.'
+  def display_prompt_guess
+    'Input your 4 digits guess. Numbers between 1 and 6 only.'
   end
 
-  def game_won
+  def display_player_guess(guess)
+    "Your guess is: #{guess}"
+  end
+
+  def display_game_won
     'Congrats! You have won.'
   end
 
-  def game_lost
+  def display_game_lost
     'Try again. Game lost.'
   end
 
-  def another_game
+  def display_another_game
     'Would you like to play again?'
+  end
+
+  def display_invalid_input
+    'Your input is invalid.'
   end
 end
