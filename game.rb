@@ -1,21 +1,27 @@
 # frozen_string_literal: true
 
-require_relative 'computer'
+require_relative 'Computer'
 require_relative 'Display'
-require_relative 'player'
+require_relative 'Player'
+require 'pry-byebug'
+require 'rainbow/refinement'
+using Rainbow
 
 # Contains the logic of the game.
 class Game
   include Display
+  attr_accessor :winner, :pins, :rounds_played
 
-  @rounds_played = 0
-  @@winner = false
-  @@pins = []
+  def initialize
+    @rounds_played = 0
+    @winner = false
+    @pins = []
+  end
 
   def play
     @code = Computer.generate_code
     reset_game
-    play_round until @@winner == true
+    play_round until @winner == true
   end
 
   # private
@@ -36,9 +42,23 @@ class Game
     guess.each do |digit|
       return invalid_input unless digit.match(/[1-6]/)
     end
-    puts "The code is #{@code}"
-    puts display_player_guess(guess)
+    # puts "The code is #{@code}"
+    color_player_guess(guess)
     guess.map!(&:to_i)
+  end
+
+  def color_player_guess(guess)
+    colors = {
+      '1' => '  1  '.white.bright.bg(:red),
+      '2' => '  2  '.white.bright.bg(:yellow),
+      '3' => '  3  '.white.bright.bg(:magenta),
+      '4' => '  4  '.white.bright.bg(:cyan),
+      '5' => '  5  '.black.bright.bg(:silver),
+      '6' => '  6  '.white.bright.bg(:black)
+    }
+    guess.each do |digit|
+      print colors[digit]
+    end
   end
 
   def check_right_pos(guess)
@@ -62,18 +82,16 @@ class Game
   end
 
   def display_pins
-    p @@pins
-    @@pins = []
+    puts @pins.shuffle.join(' ')
+    @pins = []
   end
 
   def add_solid_pin
-    puts "Solid Pin"
-    @@pins << "SOLID"
+    @pins << solid_pin
   end
 
   def add_empty_pin
-    puts "Empty pin"
-    @@pins << "EMPTY"
+    @pins << empty_pin
   end
 
   def invalid_input
@@ -93,7 +111,7 @@ class Game
     return unless temp_code.uniq.length == 1
 
     announce_winner
-    @@winner = true
+    @winner = true
   end
 
   def game_lost

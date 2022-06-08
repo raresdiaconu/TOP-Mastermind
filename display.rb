@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+require 'rainbow/refinement'
+using Rainbow
+
 # Contains the messages displayed to the player.
 module Display
   def display_prompt_guess
@@ -24,5 +27,13 @@ module Display
 
   def display_invalid_input
     'Your input is invalid.'
+  end
+
+  def solid_pin
+    '●'.red
+  end
+
+  def empty_pin
+    '○'.red
   end
 end
