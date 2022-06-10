@@ -6,92 +6,81 @@ require_relative 'Player'
 require 'pry-byebug'
 require 'rainbow/refinement'
 using Rainbow
+# require 'io/console'
 
 # Contains the logic of the game.
 class Game
   include Display
-  attr_accessor :winner, :pins, :rounds_played
+  attr_accessor :winner, :pegs, :rounds_played, :guess, :code
 
   def initialize
     @rounds_played = 0
     @winner = false
-    @pins = []
+    @pegs = []
+    @guess = ''
   end
 
   def play
     @code = Computer.generate_code
     reset_game
-    play_round until @winner == true
+    display_instructions
+    play_round while @winner == false && @rounds_played < 12
+    game_lost if @rounds_played == 12
   end
 
   # private
 
   def play_round
-    return game_lost if @rounds_played == 12
-
     @rounds_played += 1
     check_right_pos(player_guess)
-    display_pins
+    display_pegs
+    winner?
   end
 
   def player_guess
     puts display_prompt_guess
-    guess = gets.chomp.chars
+    @guess = gets.chomp.chars
     return invalid_input unless guess.length == 4
 
-    guess.each do |digit|
+    @guess.each do |digit|
       return invalid_input unless digit.match(/[1-6]/)
     end
-    # puts "The code is #{@code}"
-    color_player_guess(guess)
-    guess.map!(&:to_i)
+    apply_color(guess)
+    @guess.map!(&:to_i)
   end
 
-  def color_player_guess(guess)
-    colors = {
-      '1' => '  1  '.white.bright.bg(:red),
-      '2' => '  2  '.white.bright.bg(:yellow),
-      '3' => '  3  '.white.bright.bg(:magenta),
-      '4' => '  4  '.white.bright.bg(:cyan),
-      '5' => '  5  '.black.bright.bg(:silver),
-      '6' => '  6  '.white.bright.bg(:black)
-    }
-    guess.each do |digit|
-      print colors[digit]
+  def apply_color(code)
+    code.each do |digit|
+      print colors(digit.to_s)
     end
+    puts
   end
 
   def check_right_pos(guess)
     temp_code = []
     @code.each_with_index do |digit, idx|
       if digit == guess[idx]
-        add_solid_pin
+        add_solid_peg
         temp_code << nil
       else
         temp_code << digit
       end
     end
-    winner?(temp_code)
     check_any_pos(guess, temp_code)
   end
 
   def check_any_pos(guess, temp_code)
     guess.uniq.each do |digit|
-      add_empty_pin if temp_code.include?(digit)
+      add_empty_peg if temp_code.include?(digit)
     end
   end
 
-  def display_pins
-    puts @pins.shuffle.join(' ')
-    @pins = []
+  def add_solid_peg
+    @pegs << solid_peg
   end
 
-  def add_solid_pin
-    @pins << solid_pin
-  end
-
-  def add_empty_pin
-    @pins << empty_pin
+  def add_empty_peg
+    @pegs << empty_peg
   end
 
   def invalid_input
@@ -101,27 +90,34 @@ class Game
 
   def reset_game
     @rounds_played = 0
+    @winner = false
+    @pegs = []
+    @guess = ''
   end
 
   def announce_winner
     puts display_game_won
   end
 
-  def winner?(temp_code)
-    return unless temp_code.uniq.length == 1
+  def winner?
+    return unless @guess == @code
 
     announce_winner
     @winner = true
+    another_game?
   end
 
   def game_lost
     puts display_game_lost
+    apply_color(code)
     another_game?
   end
 
   def another_game?
     puts display_another_game
     input = gets.chomp.upcase
-    return puts 'Thanks for playing' unless input == 'Y'
+    return puts 'Thanks for playing!' unless input == 'Y'
+
+    play
   end
 end
