@@ -11,7 +11,7 @@ using Rainbow
 # Contains the logic of the game.
 class Game
   include Display
-  attr_accessor :winner, :pegs, :rounds_played, :guess, :code
+  attr_accessor :winner, :pegs, :rounds_played, :guess, :code, :game_mode
 
   def initialize
     @rounds_played = 0
@@ -24,6 +24,7 @@ class Game
     @code = Computer.generate_code
     reset_game
     display_instructions
+    @game_mode = pick_game_mode
     play_round while @winner == false && @rounds_played < 12
     game_lost if @rounds_played == 12
   end
@@ -32,7 +33,9 @@ class Game
 
   def play_round
     @rounds_played += 1
-    check_right_pos(player_guess)
+    return play unless game_mode.length == 1 && game_mode.match(/[1-2]/)
+
+    game_mode == '1' ? check_right_pos(computer_guess) : check_right_pos(player_guess)
     display_pegs
     winner?
   end
@@ -47,13 +50,6 @@ class Game
     end
     apply_color(guess)
     @guess.map!(&:to_i)
-  end
-
-  def apply_color(code)
-    code.each do |digit|
-      print colors(digit.to_s)
-    end
-    puts
   end
 
   def check_right_pos(guess)
@@ -76,11 +72,11 @@ class Game
   end
 
   def add_solid_peg
-    @pegs << solid_peg
+    @pegs << solid_peg.red
   end
 
   def add_empty_peg
-    @pegs << empty_peg
+    @pegs << empty_peg.red
   end
 
   def invalid_input
@@ -108,7 +104,7 @@ class Game
   end
 
   def game_lost
-    puts display_game_lost
+    game_mode == '1' ? display_game_lost_code_maker : display_game_lost_code_breaker
     apply_color(code)
     another_game?
   end
