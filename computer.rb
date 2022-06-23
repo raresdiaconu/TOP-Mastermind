@@ -23,8 +23,22 @@ class Computer
     @guess = @all_candidates.sample(1)
   end
 
-  def compare_guess(hints, guess)
-    
+  # def make_move
+
+  # end
+
+  def compare_guess(_hints, _guess)
+    @temp_pegs = @pegs
+
+    # make the initial guess and get the first set of pegs.
+    # assign the value of @pegs to another instance variable, called @temp_pegs
+    # take the @all candidates array of arrays (or possible codes)
+    # assign Each of them as the @code
+    # call the check_right_pos method
+    # after getting the number and type of pegs (another array) compare it to the @temp_pegs (initial guess)
+    # if the number and type of pegs are different (arrays are not equal),
+    # delete the currently assessed code from the @all candidates array
+    # 
   end
 
   def self.generate_code
