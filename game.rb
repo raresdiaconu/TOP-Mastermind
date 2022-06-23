@@ -11,9 +11,10 @@ using Rainbow
 # Contains the logic of the game.
 class Game
   include Display
-  attr_accessor :winner, :pegs, :rounds_played, :guess, :code, :game_mode
+  attr_accessor :winner, :pegs, :rounds_played, :guess, :code, :game_mode, :player
 
   def initialize
+    @player = Player.new
     @rounds_played = 0
     @winner = false
     @pegs = []
@@ -21,32 +22,49 @@ class Game
   end
 
   def play
-    @code = Computer.generate_code
     reset_game
     display_instructions
-    @game_mode = pick_game_mode
+    select_game_mode
+    create_code
     play_round while @winner == false && @rounds_played < 12
     game_lost if @rounds_played == 12
   end
 
   # private
 
+  def select_game_mode
+    puts display_select_game_mode
+    @game_mode = gets.chomp
+    return invalid_selection_input unless game_mode.length == 1 && game_mode.match(/[1-2]/)
+  end
+
+  def create_code
+    @code = game_mode == '1' ? player.input_code : Computer.generate_code
+  end
+
   def play_round
     @rounds_played += 1
-    return play unless game_mode.length == 1 && game_mode.match(/[1-2]/)
-
-    game_mode == '1' ? check_right_pos(computer_guess) : check_right_pos(player_guess)
+    # potential improvement: this method should not assess the mode of the game every round
+    game_mode == '1' ? code_maker : code_breaker
     display_pegs
     winner?
+  end
+
+  def code_maker
+    # check_right_pos(computer_guess)
+  end
+
+  def code_breaker
+    check_right_pos(player_guess)
   end
 
   def player_guess
     puts display_prompt_guess
     @guess = gets.chomp.chars
-    return invalid_input unless guess.length == 4
+    return invalid_guess_input unless guess.length == 4
 
     @guess.each do |digit|
-      return invalid_input unless digit.match(/[1-6]/)
+      return invalid_guess_input unless digit.match(/[1-6]/)
     end
     apply_color(guess)
     @guess.map!(&:to_i)
@@ -79,9 +97,14 @@ class Game
     @pegs << empty_peg.red
   end
 
-  def invalid_input
+  def invalid_guess_input
     puts display_invalid_input
     player_guess
+  end
+
+  def invalid_selection_input
+    puts display_invalid_input
+    select_game_mode
   end
 
   def reset_game
@@ -92,7 +115,7 @@ class Game
   end
 
   def announce_winner
-    puts display_game_won
+    game_mode == '1' ? display_game_won_code_maker : display_game_won_code_breaker
   end
 
   def winner?
