@@ -31,6 +31,11 @@ module Display
     options.join('')
   end
 
+  def pick_game_mode
+    puts 'Pick the game mode 1)Code-Maker or 2)Code-Breaker (input 1/2):'
+    gets.chomp
+  end
+
   def display_prompt_guess
     rounds = @rounds_played.to_s
     <<~HEREDOC
@@ -48,8 +53,12 @@ module Display
     'Congrats! You have won.'
   end
 
-  def display_game_lost
+  def display_game_lost_code_breaker
     "\nShucks! You don't seem to have cracked the code. The code was:"
+  end
+
+  def display_game_lost_code_maker
+    "\nThe computer didn't manage to crack your code. Your code was:"
   end
 
   def display_another_game
@@ -61,11 +70,11 @@ module Display
   end
 
   def solid_peg
-    '●'.red
+    '●'
   end
 
   def empty_peg
-    '○'.red
+    '○'
   end
 
   def display_pegs
@@ -83,5 +92,12 @@ module Display
       '6' => '   6   '.white.bright.bg(:black)
     }
     colors[color]
+  end
+
+  def apply_color(code)
+    code.each do |digit|
+      print colors(digit.to_s)
+    end
+    puts
   end
 end
