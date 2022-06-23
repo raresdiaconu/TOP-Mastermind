@@ -31,9 +31,8 @@ module Display
     options.join('')
   end
 
-  def pick_game_mode
+  def display_select_game_mode
     puts 'Pick the game mode 1)Code-Maker or 2)Code-Breaker (input 1/2):'
-    gets.chomp
   end
 
   def display_prompt_guess
@@ -45,20 +44,28 @@ module Display
     HEREDOC
   end
 
+  def display_input_code
+    "You're the Code-Maker. Create a code by inputting digits between 1 and 6. No duplicates allowed."
+  end
+
   def display_player_guess(guess)
     "Your guess is: #{guess}"
   end
 
-  def display_game_won
-    'Congrats! You have won.'
+  def display_game_won_code_maker
+    'The computer has won.'
   end
 
-  def display_game_lost_code_breaker
-    "\nShucks! You don't seem to have cracked the code. The code was:"
+  def display_game_won_code_breaker
+    'Congrats! You have won.'
   end
 
   def display_game_lost_code_maker
     "\nThe computer didn't manage to crack your code. Your code was:"
+  end
+
+  def display_game_lost_code_breaker
+    "\nShucks! You don't seem to have cracked the code. The code was:"
   end
 
   def display_another_game
