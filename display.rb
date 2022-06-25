@@ -2,37 +2,52 @@
 
 require 'rainbow/refinement'
 using Rainbow
-require 'pry-byebug'
 
 # Contains the messages displayed to the player.
 module Display
   def display_instructions
-    puts <<~HEREDOC.strip
-      Welcome to Mastermind!
+    puts <<~HEREDOC
 
-      The computer will create a code of 4 colors.
-      You will have 12 rounds to guess that code by inputting a combination of 4 of the colors below.
-      #{display_all_options}
+      #{'Welcome to Mastermind!'.underline}
+      Immerse yourself in a world of code-breaking, mind-stimulating adventure!
 
-      After each round you will be getting #{'hints'.underline}:
-      #{solid_peg} - means that you have placed the right color in the right position.
-      #{empty_peg} - means that you have placed the right color in the wrong position.
+      Two players: the Code-Maker and the Code-Breaker
+      One code: the Code-Maker creates a code using a unique combination of 4 out of the 6 possible colors, displayed below:
+      #{display_options(6)}
+
+      CODE EXAMPLE:
+      #{display_options(4)}
+
+      Want to challenge yourself? Take a crack at being the #{'Code-Breaker'.underline}.
+      The computer will generate the code and you will have 12 rounds to break it.
+
+      Fancy testing the boundaries of the computer's wits?
+      Hit it with your best shot by being the #{'Code-Maker'.underline}!
+      You will be inputting a code of your choice and the computer will attempt cracking it.
+      Heads up! The computer is kind of #{'smart'.underline}.
+      It uses a strategy first presented by P.F.Swaszek in 2000 and it usually takes it an average of 5 guesses to win.
+
+      After each round the Code-Breaker will be getting #{'hints'.underline}:
+      #{solid_peg.red} - means that the right color has been placed in its right position.
+      #{empty_peg.red} - means that one of the colors is part of the code, however it's not in its right position.
+
+      Use them to navigate through the game.
 
       Good luck!
       ----------
     HEREDOC
   end
 
-  def display_all_options
+  def display_options(num)
     options = []
-    6.times do |i|
+    num.times do |i|
       options << colors((i + 1).to_s)
     end
     options.join('')
   end
 
   def display_select_game_mode
-    puts 'Pick the game mode 1)Code-Maker or 2)Code-Breaker (input 1/2):'
+    "Pick the game mode #{'1 - Code-Maker'.underline} or #{'2 - Code-Breaker'.underline} (input 1/2):"
   end
 
   def display_guessing_prompt
@@ -48,7 +63,12 @@ module Display
   end
 
   def display_input_code
-    "You're the Code-Maker. Create a code by inputting digits between 1 and 6. No duplicates allowed."
+    "\nYou're the #{'Code-Maker'.underline}. Create a code by inputting 4 unique digits between 1 and 6."
+  end
+
+  def display_player_code(code)
+    puts 'The code you chose is:'
+    apply_color(code)
   end
 
   def display_player_guess(guess)
@@ -56,11 +76,11 @@ module Display
   end
 
   def display_game_won_code_maker
-    'The computer has won.'
+    "\nThe computer has won!"
   end
 
   def display_game_won_code_breaker
-    'Congrats! You have won.'
+    "\nYes lawd! You have won."
   end
 
   def display_game_lost_code_maker
