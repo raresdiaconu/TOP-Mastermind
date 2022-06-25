@@ -35,13 +35,16 @@ module Display
     puts 'Pick the game mode 1)Code-Maker or 2)Code-Breaker (input 1/2):'
   end
 
-  def display_prompt_guess
-    rounds = @rounds_played.to_s
+  def display_guessing_prompt
     <<~HEREDOC
-
-      #{"Round #{rounds}".underline}
+      #{display_round_number}
       Input your combination of choice. Use digits between 1 and 6 only.
     HEREDOC
+  end
+
+  def display_round_number
+    rounds = @rounds_played.to_s
+    "\n#{"Round #{rounds}".underline}"
   end
 
   def display_input_code
