@@ -85,6 +85,7 @@ module Display
   end
 
   def display_pegs
+    @pegs.map!(&:red)
     puts "HINTS: #{@pegs.shuffle.join(' ')}"
     @pegs = []
   end
