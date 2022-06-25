@@ -23,15 +23,9 @@ class Computer
   end
 
   def make_guess(rounds_played)
-    # return @guess = initial_guess if rounds_played == 1
-    if rounds_played == 1
-      @guess = initial_guess
-      apply_color(@guess)
-      return @guess
-    end
+    return @guess = initial_guess if rounds_played == 1
+
     @guess = @all_candidates.sample(1).flatten
-    apply_color(@guess)
-    @guess
   end
 
   def sort_new_candidates(pegs)
