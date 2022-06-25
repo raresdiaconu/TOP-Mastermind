@@ -6,7 +6,6 @@ require_relative 'Player'
 require 'pry-byebug'
 require 'rainbow/refinement'
 using Rainbow
-# require 'io/console'
 
 # Contains the logic of the game.
 class Game
@@ -19,7 +18,6 @@ class Game
     @rounds_played = 0
     @winner = false
     @pegs = []
-    @guess = ''
   end
 
   def play
@@ -27,6 +25,7 @@ class Game
     display_instructions
     select_game_mode
     create_code
+    display_player_code(code) if game_mode == '1'
     play_round while @winner == false && @rounds_played < 12
     game_lost if @rounds_played == 12
   end
@@ -45,39 +44,31 @@ class Game
 
   def play_round
     @rounds_played += 1
-    # potential improvement: this method should not assess the mode of the game every round
     game_mode == '1' ? code_maker : code_breaker
+    apply_color(@guess)
     display_pegs
     winner?
   end
 
   def code_maker
     puts display_round_number
-    check_right_pos(computer.make_guess(rounds_played))
+    @guess = computer.make_guess(rounds_played)
+    check_right_pos(@guess)
     computer.sort_new_candidates(pegs)
+    sleep 0.5
   end
 
   def code_breaker
     puts display_guessing_prompt
-    check_right_pos(player_guess)
-  end
-
-  def player_guess
-    @guess = gets.chomp.chars
-    return invalid_guess_input unless guess.length == 4
-
-    @guess.each do |digit|
-      return invalid_guess_input unless digit.match(/[1-6]/)
-    end
-    apply_color(guess)
-    @guess.map!(&:to_i)
+    @guess = player.input_guess
+    check_right_pos(@guess)
   end
 
   def check_right_pos(guess)
     temp_code = []
     @code.each_with_index do |digit, idx|
       if digit == guess[idx]
-        add_solid_peg
+        add_peg(solid_peg)
         temp_code << nil
       else
         temp_code << digit
@@ -88,21 +79,12 @@ class Game
 
   def check_any_pos(guess, temp_code)
     guess.uniq.each do |digit|
-      add_empty_peg if temp_code.include?(digit)
+      add_peg(empty_peg) if temp_code.include?(digit)
     end
   end
 
-  def add_solid_peg
-    @pegs << solid_peg
-  end
-
-  def add_empty_peg
-    @pegs << empty_peg
-  end
-
-  def invalid_guess_input
-    puts display_invalid_input
-    player_guess
+  def add_peg(peg)
+    @pegs << peg
   end
 
   def invalid_selection_input
@@ -113,7 +95,7 @@ class Game
   def reset_game
     @rounds_played = 0
     @winner = false
-    @pegs = []
+    @pegs.clear
     @guess = ''
     computer.reset_permutations
   end
