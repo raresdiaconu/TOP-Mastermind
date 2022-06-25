@@ -52,16 +52,17 @@ class Game
   end
 
   def code_maker
+    puts display_round_number
     check_right_pos(computer.make_guess(rounds_played))
     computer.sort_new_candidates(pegs)
   end
 
   def code_breaker
+    puts display_guessing_prompt
     check_right_pos(player_guess)
   end
 
   def player_guess
-    puts display_prompt_guess
     @guess = gets.chomp.chars
     return invalid_guess_input unless guess.length == 4
 
@@ -114,14 +115,15 @@ class Game
     @winner = false
     @pegs = []
     @guess = ''
+    computer.reset_permutations
   end
 
   def announce_winner
-    game_mode == '1' ? display_game_won_code_maker : display_game_won_code_breaker
+    puts game_mode == '1' ? display_game_won_code_maker : display_game_won_code_breaker
   end
 
   def winner?
-    return unless @guess == @code
+    return unless @guess == @code || computer.guess == @code
 
     announce_winner
     @winner = true
@@ -129,7 +131,7 @@ class Game
   end
 
   def game_lost
-    game_mode == '1' ? display_game_lost_code_maker : display_game_lost_code_breaker
+    puts game_mode == '1' ? display_game_lost_code_maker : display_game_lost_code_breaker
     apply_color(code)
     another_game?
   end
