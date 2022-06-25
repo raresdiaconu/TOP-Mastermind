@@ -12,9 +12,7 @@ class Computer
   def initialize
     @range = [1, 2, 3, 4, 5, 6]
     @all_permutations = create_all_permutations(@range)
-    # @all_permutations = [[1, 1, 2, 2], [1, 2, 3, 4], [1, 2, 1, 1]]
-    @all_candidates = @all_permutations.clone
-    @new_candidates = @all_candidates.clone
+    @all_candidates = @new_candidates = @all_permutations.clone
     @initial_guess = [1, 1, 2, 2]
     @guess = []
     @current_pegs = []
@@ -43,16 +41,6 @@ class Computer
       current_pegs.clear
     end
     @all_candidates = @new_candidates.clone
-
-    # make the initial guess and get the first set of pegs.
-    # assign the value of @pegs to another instance variable, called @temp_pegs
-    # take the @all candidates array of arrays (or possible codes)
-    # assign Each of them as the @code
-    # call the check_right_pos method
-    # after getting the number and type of pegs (another array) compare it to the @temp_pegs (initial guess)
-    # if the number and type of pegs are different (arrays are not equal),
-    # delete the currently assessed code from the @all candidates array
-    #
   end
 
   def computer_check_right_pos(candidate, current_guess)
@@ -79,5 +67,9 @@ class Computer
 
   def generate_code
     (1..6).to_a.sample(4)
+  end
+
+  def reset_permutations
+    @all_candidates = @new_candidates = @all_permutations.clone
   end
 end
