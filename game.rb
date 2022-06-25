@@ -11,10 +11,11 @@ using Rainbow
 # Contains the logic of the game.
 class Game
   include Display
-  attr_accessor :winner, :pegs, :rounds_played, :guess, :code, :game_mode, :player
+  attr_accessor :winner, :pegs, :rounds_played, :guess, :code, :game_mode, :player, :computer
 
   def initialize
     @player = Player.new
+    @computer = Computer.new
     @rounds_played = 0
     @winner = false
     @pegs = []
@@ -39,7 +40,7 @@ class Game
   end
 
   def create_code
-    @code = game_mode == '1' ? player.input_code : Computer.generate_code
+    @code = game_mode == '1' ? player.input_code : computer.generate_code
   end
 
   def play_round
@@ -51,7 +52,8 @@ class Game
   end
 
   def code_maker
-    # check_right_pos(computer_guess)
+    check_right_pos(computer.make_guess(rounds_played))
+    computer.sort_new_candidates(pegs)
   end
 
   def code_breaker
@@ -90,11 +92,11 @@ class Game
   end
 
   def add_solid_peg
-    @pegs << solid_peg.red
+    @pegs << solid_peg
   end
 
   def add_empty_peg
-    @pegs << empty_peg.red
+    @pegs << empty_peg
   end
 
   def invalid_guess_input
