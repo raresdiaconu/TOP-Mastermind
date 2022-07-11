@@ -3,6 +3,7 @@
 require_relative 'Computer'
 require_relative 'Display'
 require_relative 'Player'
+require_relative 'Position_Checker'
 require 'pry-byebug'
 require 'rainbow/refinement'
 using Rainbow
@@ -10,6 +11,7 @@ using Rainbow
 # Contains the logic of the game.
 class Game
   include Display
+  include PositionChecker
   attr_accessor :winner, :pegs, :rounds_played, :guess, :code, :game_mode, :player, :computer
 
   def initialize
@@ -61,30 +63,7 @@ class Game
   def code_breaker
     puts display_guessing_prompt
     @guess = player.input_guess
-    check_right_pos(@guess)
-  end
-
-  def check_right_pos(guess)
-    temp_code = []
-    @code.each_with_index do |digit, idx|
-      if digit == guess[idx]
-        add_peg(solid_peg)
-        temp_code << nil
-      else
-        temp_code << digit
-      end
-    end
-    check_any_pos(guess, temp_code)
-  end
-
-  def check_any_pos(guess, temp_code)
-    guess.uniq.each do |digit|
-      add_peg(empty_peg) if temp_code.include?(digit)
-    end
-  end
-
-  def add_peg(peg)
-    @pegs << peg
+    check_right_position(@code, @guess)
   end
 
   def invalid_selection_input
