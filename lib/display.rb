@@ -23,9 +23,9 @@ module Display
 
       Fancy testing the boundaries of the computer's wits?
       Hit it with your best shot by being the #{'Code-Maker'.underline}!
-      You will be inputting a code of your choice and the computer will attempt cracking it.
+      You will be inputting a code of your choice and the computer will attempt to crack it.
       Heads up! The computer is kind of #{'smart'.underline}.
-      It uses a strategy first presented by P.F.Swaszek in 2000 and it usually takes it an average of 5 guesses to win.
+      It uses a strategy first presented by P.F.Swaszek in 2000 and it usually takes an average of 5 guesses to win.
 
       After each round the Code-Breaker will be getting #{'hints'.underline}:
       #{solid_peg.red} - means that the right color has been placed in its right position.
@@ -76,7 +76,7 @@ module Display
   end
 
   def display_game_won_code_maker
-    "\nThe computer has won!"
+    "\nThe computer has cracked your code!"
   end
 
   def display_game_won_code_breaker
