@@ -8,10 +8,14 @@ class Player
 
   def input_code
     puts display_input_code
-    player_code = gets.chomp
-    return invalid_code_input unless player_code.chars.uniq.length == 4 && player_code.match(/[1-6]/)
+    player_code = gets.chomp.chars
+    return invalid_code_input unless player_code.uniq.length == 4
 
-    player_code.chars.map!(&:to_i)
+    player_code.each do |digit|
+      return invalid_code_input unless digit.match(/[1-6]/)
+    end
+
+    player_code.map!(&:to_i)
   end
 
   def invalid_code_input
