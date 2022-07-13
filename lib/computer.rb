@@ -20,8 +20,8 @@ class Computer
     @pegs = []
   end
 
-  def create_all_permutations(range)
-    range.repeated_permutation(4).to_a
+  def generate_code
+    (1..6).to_a.sample(4)
   end
 
   def make_guess(rounds_played)
@@ -39,11 +39,13 @@ class Computer
     @all_candidates = @new_candidates.clone
   end
 
-  def generate_code
-    (1..6).to_a.sample(4)
-  end
-
   def reset_permutations
     @all_candidates = @new_candidates = @all_permutations.clone
+  end
+
+  private
+
+  def create_all_permutations(range)
+    range.repeated_permutation(4).to_a
   end
 end

@@ -32,7 +32,7 @@ class Game
     game_lost if @rounds_played == 12
   end
 
-  # private
+  private
 
   def select_game_mode
     puts display_select_game_mode
@@ -55,7 +55,7 @@ class Game
   def code_maker
     puts display_round_number
     @guess = computer.make_guess(rounds_played)
-    check_right_pos(@guess)
+    check_right_position(code, @guess)
     computer.sort_new_candidates(pegs)
     sleep 0.5
   end

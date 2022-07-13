@@ -18,11 +18,6 @@ class Player
     player_code.map!(&:to_i)
   end
 
-  def invalid_code_input
-    puts display_invalid_input
-    input_code
-  end
-
   def input_guess
     guess = gets.chomp.chars
     return invalid_guess_input unless guess.length == 4
@@ -31,6 +26,13 @@ class Player
       return invalid_guess_input unless digit.match(/[1-6]/)
     end
     guess.map!(&:to_i)
+  end
+
+  private
+
+  def invalid_code_input
+    puts display_invalid_input
+    input_code
   end
 
   def invalid_guess_input
